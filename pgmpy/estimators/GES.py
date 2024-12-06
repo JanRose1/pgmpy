@@ -55,6 +55,20 @@ class GES(StructureEstimator):
 
         super(GES, self).__init__(data=data, **kwargs)
 
+    def Test_type(self):#Ideally I would run this in over to choose the proper test depending on the kind of data.
+        Ctype = 0
+        Ntype = 0
+        for key in self.data.dtypes:
+            if key in ['category','C']:
+                Ctype += 1
+            elif key in ['float32','float64','N']:
+                Ntype += 1
+        if len(self.data.columns) == Ctype:
+            return 'BIC'
+        elif len(self.data.columns) == Ntype:
+            return 'BICGauss'
+        return 'BICCondGauss'
+    
     def _legal_edge_additions(self, current_model):
         """
         Returns a list of all edges that can be added to the graph such that it remains a DAG.
@@ -84,7 +98,7 @@ class GES(StructureEstimator):
             current_model.add_edge(u, v)
         return potential_flips
 
-    def estimate(self, scoring_method="bic-d", min_improvement=1e-6, debug=False):
+    def estimate(self, scoring_method=None, min_improvement=1e-6, debug=False):
         """
         Estimates the DAG from the data.
 
@@ -121,6 +135,8 @@ class GES(StructureEstimator):
         >>> len(dag.edges())
         45
         """
+        if scoring_method == None:
+            scoring_method = self.Test_type()
 
         # Step 0: Initial checks and setup for arguments
         supported_methods = {
