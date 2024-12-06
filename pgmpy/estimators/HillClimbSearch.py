@@ -141,9 +141,23 @@ class HillClimbSearch(StructureEstimator):
                         score_delta += structure_score("flip")
                         yield (operation, score_delta)
 
+    def Test_type(self):#Ideally I would run this in over to choose the proper test depending on the kind of data.
+        Ctype = 0
+        Ntype = 0
+        for key in self.data.dtypes:
+            if key in ['category','C']:
+                Ctype += 1
+            elif key in ['float32','float64','N']:
+                Ntype += 1
+        if len(self.data.columns) == Ctype:
+            return 'BIC'
+        elif len(self.data.columns) == Ntype:
+            return 'BICGauss'
+        return 'BICCondGauss'
+    
     def estimate(
         self,
-        scoring_method="k2",
+        scoring_method=None,
         start_dag=None,
         fixed_edges=set(),
         tabu_length=100,
@@ -225,7 +239,8 @@ class HillClimbSearch(StructureEstimator):
         >>> len(dag.edges())
         45
         """
-
+        if scoring_method == None:
+            scoring_method = self.Test_type()
         # Step 1: Initial checks and setup for arguments
         # Step 1.1: Check scoring_method
         supported_methods = {
