@@ -50,10 +50,25 @@ class PC(StructureEstimator):
     def __init__(self, data=None, independencies=None, **kwargs):
         super(PC, self).__init__(data=data, independencies=independencies, **kwargs)
 
+    def Test_type(self):
+        Ctype = 0
+        Ntype = 0
+        for key in self.data.dtypes:
+            if key in ['category','C']:
+                Ctype += 1
+            elif key in ['float32','float64','N']:
+                Ntype += 1
+        if len(self.data.columns) == Ctype:
+            return 'chi_square'
+        elif len(self.data.columns) == Ntype:
+            return 'pearsonr'
+        return 'pillai_trace'
+        
+    
     def estimate(
         self,
         variant="stable",
-        ci_test="chi_square",
+        ci_test= None, #was "chi_square"
         max_cond_vars=5,
         return_type="dag",
         significance_level=0.01,
@@ -151,6 +166,8 @@ class PC(StructureEstimator):
         >>> print(len(model_gsq.edges()))
         33
         """
+        if ci_test == None:
+             ci_test = self.Test_type()
         # Step 0: Do checks that the specified parameters are correct, else throw meaningful error.
         if variant not in ("orig", "stable", "parallel"):
             raise ValueError(
@@ -255,7 +272,7 @@ class PC(StructureEstimator):
                 ci_test = CI_TESTS[ci_test]
             except KeyError:
                 raise ValueError(
-                    f"ci_test must either be one of {list(CI_TESTS.keys())}, or a function. Got: {ci_test}"
+                    f"ci_test must either be one of {list(CI_TESTS.keys())}, or a function. Got: {ci_test}" #Breaks if CI_Test was wrong
                 )
 
         if show_progress and config.SHOW_PROGRESS:
