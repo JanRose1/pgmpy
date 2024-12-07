@@ -20,6 +20,7 @@ from pgmpy.estimators import (
     ScoreCache,
     StructureEstimator,
     StructureScore,
+    scoring
 )
 from pgmpy.global_vars import logger
 
@@ -136,7 +137,7 @@ class GES(StructureEstimator):
         45
         """
         if scoring_method == None:
-            scoring_method = self.Test_type()
+            scoring_method = scoring.get_scoring_method(self.data)
 
         # Step 0: Initial checks and setup for arguments
         supported_methods = {

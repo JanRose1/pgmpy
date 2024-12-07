@@ -48,22 +48,7 @@ class PC(StructureEstimator):
     """
 
     def __init__(self, data=None, independencies=None, **kwargs):
-        super(PC, self).__init__(data=data, independencies=independencies, **kwargs)
-
-    def Test_type(self):
-        Ctype = 0
-        Ntype = 0
-        for key in self.data.dtypes:
-            if key in ['category','C']:
-                Ctype += 1
-            elif key in ['float32','float64','N']:
-                Ntype += 1
-        if len(self.data.columns) == Ctype:
-            return 'chi_square'
-        elif len(self.data.columns) == Ntype:
-            return 'pearsonr'
-        return 'pillai_trace'
-        
+        super(PC, self).__init__(data=data, independencies=independencies, **kwargs)    
     
     def estimate(
         self,
@@ -167,7 +152,8 @@ class PC(StructureEstimator):
         33
         """
         if ci_test == None:
-             ci_test = self.Test_type()
+             ci_test = get_scoring_method(self.data)
+                
         # Step 0: Do checks that the specified parameters are correct, else throw meaningful error.
         if variant not in ("orig", "stable", "parallel"):
             raise ValueError(

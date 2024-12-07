@@ -22,7 +22,9 @@ from pgmpy.estimators import (
     ScoreCache,
     StructureEstimator,
     StructureScore,
+    scoring
 )
+
 
 
 class HillClimbSearch(StructureEstimator):
@@ -140,20 +142,6 @@ class HillClimbSearch(StructureEstimator):
                         )
                         score_delta += structure_score("flip")
                         yield (operation, score_delta)
-
-    def Test_type(self):#Ideally I would run this in over to choose the proper test depending on the kind of data.
-        Ctype = 0
-        Ntype = 0
-        for key in self.data.dtypes:
-            if key in ['category','C']:
-                Ctype += 1
-            elif key in ['float32','float64','N']:
-                Ntype += 1
-        if len(self.data.columns) == Ctype:
-            return 'BIC'
-        elif len(self.data.columns) == Ntype:
-            return 'BICGauss'
-        return 'BICCondGauss'
     
     def estimate(
         self,
@@ -240,7 +228,8 @@ class HillClimbSearch(StructureEstimator):
         45
         """
         if scoring_method == None:
-            scoring_method = self.Test_type()
+            scoring_method = scoring.get_scoring_method(self.data)
+            
         # Step 1: Initial checks and setup for arguments
         # Step 1.1: Check scoring_method
         supported_methods = {

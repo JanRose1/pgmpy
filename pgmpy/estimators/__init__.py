@@ -14,6 +14,7 @@ from pgmpy.estimators.StructureScore import (
     AICCondGauss,
     LogLikelihoodGauss,
     LogLikelihoodCondGauss,
+    scoring,
 )
 from pgmpy.estimators.ExhaustiveSearch import ExhaustiveSearch
 from pgmpy.estimators.HillClimbSearch import HillClimbSearch
@@ -59,4 +60,5 @@ __all__ = [
     "LogLikelihoodCondGauss",
     "AICCondGauss",
     "BICCondGauss",
+    "scoring"
 ]
