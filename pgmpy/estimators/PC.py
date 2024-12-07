@@ -48,12 +48,12 @@ class PC(StructureEstimator):
     """
 
     def __init__(self, data=None, independencies=None, **kwargs):
-        super(PC, self).__init__(data=data, independencies=independencies, **kwargs)    
-    
+        super(PC, self).__init__(data=data, independencies=independencies, **kwargs)
+
     def estimate(
         self,
         variant="stable",
-        ci_test= None, #was "chi_square"
+        ci_test=None,  # was "chi_square"
         max_cond_vars=5,
         return_type="dag",
         significance_level=0.01,
@@ -152,8 +152,8 @@ class PC(StructureEstimator):
         33
         """
         if ci_test == None:
-             ci_test = get_scoring_method(self.data)
-                
+            ci_test = get_scoring_method(self.data)
+
         # Step 0: Do checks that the specified parameters are correct, else throw meaningful error.
         if variant not in ("orig", "stable", "parallel"):
             raise ValueError(
@@ -258,7 +258,7 @@ class PC(StructureEstimator):
                 ci_test = CI_TESTS[ci_test]
             except KeyError:
                 raise ValueError(
-                    f"ci_test must either be one of {list(CI_TESTS.keys())}, or a function. Got: {ci_test}" #Breaks if CI_Test was wrong
+                    f"ci_test must either be one of {list(CI_TESTS.keys())}, or a function. Got: {ci_test}"  # Breaks if CI_Test was wrong
                 )
 
         if show_progress and config.SHOW_PROGRESS:

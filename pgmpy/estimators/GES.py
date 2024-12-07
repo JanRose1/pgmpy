@@ -20,7 +20,7 @@ from pgmpy.estimators import (
     ScoreCache,
     StructureEstimator,
     StructureScore,
-    scoring
+    scoring,
 )
 from pgmpy.global_vars import logger
 
@@ -56,20 +56,22 @@ class GES(StructureEstimator):
 
         super(GES, self).__init__(data=data, **kwargs)
 
-    def Test_type(self):#Ideally I would run this in over to choose the proper test depending on the kind of data.
+    def Test_type(
+        self,
+    ):  # Ideally I would run this in over to choose the proper test depending on the kind of data.
         Ctype = 0
         Ntype = 0
         for key in self.data.dtypes:
-            if key in ['category','C']:
+            if key in ["category", "C"]:
                 Ctype += 1
-            elif key in ['float32','float64','N']:
+            elif key in ["float32", "float64", "N"]:
                 Ntype += 1
         if len(self.data.columns) == Ctype:
-            return 'BIC'
+            return "BIC"
         elif len(self.data.columns) == Ntype:
-            return 'BICGauss'
-        return 'BICCondGauss'
-    
+            return "BICGauss"
+        return "BICCondGauss"
+
     def _legal_edge_additions(self, current_model):
         """
         Returns a list of all edges that can be added to the graph such that it remains a DAG.
